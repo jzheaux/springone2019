@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+    <meta charset="utf-8"/>
+    <title>Create User</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.css" />
+</head>
+<body>
+    <div layout:fragment="content">
+        <h1>Sign Up</h1>
+        <form th:action="@{/users/signup}" th:method="post" th:object="${user}">
+            <div class="form-group">
+                <label for="firstName">First Name</label>
+                <input type="text" class="form-control" id="firstName" placeholder="Enter first name" th:field="*{firstName}" required autofocus>
+                <div th:if="${#fields.hasErrors('firstName')}" class="alert alert-danger" role="alert">
+                    <p th:each="error : ${#fields.errors('firstName')}" th:text="${error}">Validation error</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="lastName">Last Name</label>
+                <input type="text" class="form-control" id="lastName" placeholder="Enter last name" th:field="*{lastName}" required>
+                <div th:if="${#fields.hasErrors('lastName')}" class="alert alert-danger" role="alert">
+                    <p th:each="error : ${#fields.errors('lastName')}" th:text="${error}">Validation error</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="email">Email address</label>
+                <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email" th:field="*{email}" required>
+                <div th:if="${#fields.hasErrors('email')}" class="alert alert-danger" role="alert">
+                    <p th:each="error : ${#fields.errors('email')}" th:text="${error}">Validation error</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" th:field="*{password}" required>
+                <div th:if="${#fields.hasErrors('password')}" class="alert alert-danger" role="alert">
+                    <p th:each="error : ${#fields.errors('password')}" th:text="${error}">Validation error</p>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Create User</button>
+        </form>
+    </div>
+</body>
+</html>

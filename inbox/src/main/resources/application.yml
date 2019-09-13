@@ -1,0 +1,28 @@
+logging:
+  level:
+    reator:
+      netty:
+        channel: DEBUG
+users-url: http://localhost:8081/users
+messages-url: http://localhost:9090/messages
+
+spring:
+  security:
+    oauth2:
+      client:
+        provider:
+          one:
+            issuer-uri: http://idp:9999/auth/realms/one
+            user-name-attribute: email
+          two:
+            issuer-uri: http://idp:9999/auth/realms/two
+            user-name-attribute: email
+        registration:
+          one:
+            client-id: message
+            client-secret: bfbd9f62-02ce-4638-a370-80d45514bd0a
+            scope: openid,message:read
+          two:
+            client-id: message
+            client-secret: bfbd9f62-02ce-4638-a370-80d45514bd0a
+            scope: openid,message:read

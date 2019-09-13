@@ -1,0 +1,11 @@
+#!/bin/sh
+
+set +x
+
+if [ -z $1 ]; then
+	curl -v -H "Authorization: Bearer $TOKEN" localhost:9090/messages/inbox | jq
+else
+	curl -v -H "Authorization: Bearer $TOKEN" -H "tenant: $1" localhost:9090/messages/inbox | jq
+fi
+
+set -x

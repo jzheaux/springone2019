@@ -1,0 +1,3 @@
+#!/bin/sh
+
+export TOKEN=`curl --user message:bfbd9f62-02ce-4638-a370-80d45514bd0a idp:9999/auth/realms/$1/protocol/openid-connect/token -dgrant_type=password -dusername=$2 -dpassword=password -dscope=message:read | jq -r .access_token`

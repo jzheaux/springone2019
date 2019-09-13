@@ -1,0 +1,31 @@
+version: '3'
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181:2181"
+  kafka:
+    image: wurstmeister/kafka 
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: localhost
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CREATE_TOPICS: "clients:1:1,tenants:1:1"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+  keycloak:
+    image: jboss/keycloak
+    ports:
+      - "9999:8080"
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: asdfasdfasdf
+      KEYCLOAK_IMPORT: /tmp/one-realm.json,/tmp/two-realm.json
+    volumes:
+      - "./realms:/tmp"
+    extra_hosts:
+      - "one:172.17.0.1"
+      - "two:172.17.0.1"
+      - "three:172.17.0.1"
+      - "four:172.17.0.1"

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+    <meta charset="utf-8"/>
+    <title>Inbox</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.css" />
+</head>
+<body>
+    <div layout:fragment="content">
+    <h1>Inbox</h1>
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>From</th>
+                <th>Text</th>
+                <th>View Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="message : ${messages}">
+                <td th:text="${message.from.email}"></td>
+                <td th:text="${message.text}"></td>
+                <td>
+                    <a th:href="@{/messages/{id}(id=${message.id})}">
+                        View
+                    </a>
+                </td>
+            </tr>
+            <tr th:if="${messages.empty}">
+                <td colspan="3">No Messages!</td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+</body>
+</html>

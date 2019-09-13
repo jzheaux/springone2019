@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+    <meta charset="utf-8"/>
+    <title>Messages</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.css" />
+</head>
+<body>
+    <div layout:fragment="content">
+        <h1>From:</h1>
+        <div th:text="${message.from.email}"></div>
+        <h1>To:</h1>
+        <div th:text="${message.to.email}"></div>
+        <h1>Text:</h1>
+        <div th:text="${message.text}"></div>
+        <form th:action="@{/messages/{id}(id=${message.id})}" th:method="delete">
+            <input type="submit" value="Delete"/>
+        </form>
+    </div>
+</body>
+</html>

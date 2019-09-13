@@ -1,0 +1,20 @@
+server:
+  port: 8083
+  
+spring:
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://idp:9999/auth/realms/master
+        registration:
+          keycloak:
+            client-id: master-realm
+            client-secret: bced593a-ec13-40e3-9bd3-f226eb62634b
+            authorization-grant-type: client_credentials
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer.group-id: tenants
+
+keycloakUri: http://idp:9999/auth
