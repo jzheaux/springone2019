@@ -20,13 +20,16 @@ public class Message {
 
 	private String text;
 
+	private String tenant;
+
 	public Message() { }
 
-	public Message(UUID to, UUID from, String text) {
+	public Message(UUID to, UUID from, String text, String tenant) {
 		this.id = UUID.randomUUID();
 		this.to = to;
 		this.from = from;
 		this.text = text;
+		this.tenant = tenant;
 	}
 
 	public UUID getId() {
@@ -59,5 +62,13 @@ public class Message {
 
 	public void setText(String text) {
 		this.text = text;
+	}
+
+	public String getTenant() {
+		return this.tenant;
+	}
+
+	public void setTenant(String tenant) {
+		this.tenant = tenant;
 	}
 }

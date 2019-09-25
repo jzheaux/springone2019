@@ -24,16 +24,20 @@ class MessageInitializer implements SmartInitializingSingleton {
 		UUID filipId = UUID.fromString("a2b2c791-e05a-4934-be9b-fb488f87700a");
 		UUID riaId = UUID.fromString("3df7633b-0375-4609-a256-93bab5d19762");
 
-		this.messages.save(new Message(robId, joeId, "Hello World"));
-		this.messages.save(new Message(robId, joeId, "Greetings Spring Enthusiasts"));
-		this.messages.save(new Message(joeId, robId, "Hola"));
-		this.messages.save(new Message(joeId, robId, "Hey Java Devs"));
-		this.messages.save(new Message(robId, joshId, "Aloha"));
-		this.messages.save(new Message(joshId, robId, "Welcome to Spring"));
+		String one = "one";
+		String two = "two";
+		String three = "three";
 
-		this.messages.save(new Message(joshId, filipId, "SAML is the bomb"));
-		this.messages.save(new Message(filipId, joshId, "no doubt"));
+		this.messages.save(new Message(robId, joeId, "Hello World", one));
+		this.messages.save(new Message(robId, joeId, "Greetings Spring Enthusiasts", one));
+		this.messages.save(new Message(joeId, robId, "Hola", one));
+		this.messages.save(new Message(joeId, robId, "Hey Java Devs", one));
+		this.messages.save(new Message(robId, joshId, "Aloha", one));
+		this.messages.save(new Message(joshId, robId, "Welcome to Spring", one));
 
-		this.messages.save(new Message(joshId, riaId, "Hey, nice job adding multi-tenancy, man!"));
+		this.messages.save(new Message(joshId, filipId, "SAML is the bomb", two));
+		this.messages.save(new Message(filipId, joshId, "no doubt", two));
+
+		this.messages.save(new Message(joshId, riaId, "Hey, nice job adding multi-tenancy, man!", three));
 	}
 }
