@@ -2,6 +2,8 @@ package io.jzheaux.springone2019.message;
 
 import java.util.UUID;
 
+import io.jzheaux.springone2019.message.tenant.TenantAware;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -10,7 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @author Rob Winch
  */
 @Document
-public class Message {
+public class Message implements TenantAware {
 	@Id
 	private UUID id;
 

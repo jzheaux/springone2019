@@ -3,8 +3,7 @@ package io.jzheaux.springone2019.message;
 import java.util.Optional;
 import java.util.UUID;
 
-import io.jzheaux.springone2019.message.tenant.TenantResolver;
-
+import org.springframework.data.domain.Example;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,17 +24,19 @@ public class MessageController {
 
 	@GetMapping("/list")
 	Iterable<Message> all() {
-		return this.messages.findByTenant(TenantResolver.resolve());
+		return this.messages.findAll();
 	}
 
 	@GetMapping("/inbox")
 	Iterable<Message> inbox(@CurrentUserId String currentUserId) {
-		return this.messages.findByToAndTenant(UUID.fromString(currentUserId), TenantResolver.resolve());
+		Message example = new Message();
+		example.setTo(UUID.fromString(currentUserId));
+		return this.messages.findAll(Example.of(example));
 	}
 
 	@GetMapping("/{id}")
 	Optional<Message> read(@PathVariable UUID id) {
-		return this.messages.findByIdAndTenant(id, TenantResolver.resolve());
+		return this.messages.findById(id);
 	}
 
 	@PostMapping
@@ -44,7 +45,6 @@ public class MessageController {
 			message.setId(UUID.randomUUID());
 		}
 		message.setFrom(UUID.fromString(from));
-		message.setTenant(TenantResolver.resolve());
 		return this.messages.save(message);
 	}
 }
