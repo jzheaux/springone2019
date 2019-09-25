@@ -3,10 +3,11 @@ package io.jzheaux.springone2019.message;
 import java.util.Optional;
 import java.util.UUID;
 
+import io.jzheaux.springone2019.message.tenant.TenantResolver;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,27 +24,27 @@ public class MessageController {
 	}
 
 	@GetMapping("/list")
-	Iterable<Message> all(@RequestHeader("tenant") String tenant) {
-		return this.messages.findByTenant(tenant);
+	Iterable<Message> all() {
+		return this.messages.findByTenant(TenantResolver.resolve());
 	}
 
 	@GetMapping("/inbox")
-	Iterable<Message> inbox(@CurrentUserId String currentUserId, @RequestHeader("tenant") String tenant) {
-		return this.messages.findByToAndTenant(UUID.fromString(currentUserId), tenant);
+	Iterable<Message> inbox(@CurrentUserId String currentUserId) {
+		return this.messages.findByToAndTenant(UUID.fromString(currentUserId), TenantResolver.resolve());
 	}
 
 	@GetMapping("/{id}")
-	Optional<Message> read(@PathVariable UUID id, @RequestHeader("tenant") String tenant) {
-		return this.messages.findByIdAndTenant(id, tenant);
+	Optional<Message> read(@PathVariable UUID id) {
+		return this.messages.findByIdAndTenant(id, TenantResolver.resolve());
 	}
 
 	@PostMapping
-	Message send(@CurrentUserId String from, @RequestHeader("tenant") String tenant, Message message) {
+	Message send(@CurrentUserId String from, Message message) {
 		if (message.getId() == null) {
 			message.setId(UUID.randomUUID());
 		}
 		message.setFrom(UUID.fromString(from));
-		message.setTenant(tenant);
+		message.setTenant(TenantResolver.resolve());
 		return this.messages.save(message);
 	}
 }
