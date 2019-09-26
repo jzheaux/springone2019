@@ -1,6 +1,5 @@
 package io.jzheaux.springone2019.message;
 
-import com.nimbusds.jose.proc.JWSKeySelector;
 import com.nimbusds.jose.proc.SecurityContext;
 import com.nimbusds.jwt.proc.DefaultJWTProcessor;
 import com.nimbusds.jwt.proc.JWTClaimsSetAwareJWSKeySelector;
@@ -11,9 +10,12 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
+import org.springframework.security.oauth2.core.OAuth2TokenValidator;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtValidators;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
-import org.springframework.security.oauth2.server.resource.authentication.JwtBearerTokenAuthenticationConverter;
 
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
@@ -24,6 +26,9 @@ public class MessageSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	JWTClaimsSetAwareJWSKeySelector<SecurityContext> jwsKeySelector;
+
+	@Autowired
+	OAuth2TokenValidator<Jwt> jwtValidator;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -42,6 +47,10 @@ public class MessageSecurityConfig extends WebSecurityConfigurerAdapter {
 	JwtDecoder jwtDecoder() {
 		DefaultJWTProcessor<SecurityContext> processor = new DefaultJWTProcessor<>();
 		processor.setJWTClaimsSetAwareJWSKeySelector(this.jwsKeySelector);
-		return new NimbusJwtDecoder(processor);
+		NimbusJwtDecoder decoder = new NimbusJwtDecoder(processor);
+		OAuth2TokenValidator<Jwt> validator = new DelegatingOAuth2TokenValidator<>
+				(JwtValidators.createDefault(), this.jwtValidator);
+		decoder.setJwtValidator(validator);
+		return decoder;
 	}
 }
