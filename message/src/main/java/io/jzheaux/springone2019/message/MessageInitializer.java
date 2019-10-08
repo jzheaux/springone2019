@@ -1,9 +1,18 @@
 package io.jzheaux.springone2019.message;
 
+import java.util.Collections;
 import java.util.UUID;
 
 import org.springframework.beans.factory.SmartInitializingSingleton;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.DefaultOAuth2AuthenticatedPrincipal;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
+import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
+import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthentication;
 import org.springframework.stereotype.Component;
+
+import static java.time.Instant.now;
 
 /**
  * @author Rob Winch
@@ -28,6 +37,7 @@ class MessageInitializer implements SmartInitializingSingleton {
 		String two = "two";
 		String three = "three";
 
+		withTenant(one);
 		this.messages.save(new Message(robId, joeId, "Hello World", one));
 		this.messages.save(new Message(robId, joeId, "Greetings Spring Enthusiasts", one));
 		this.messages.save(new Message(joeId, robId, "Hola", one));
@@ -35,9 +45,21 @@ class MessageInitializer implements SmartInitializingSingleton {
 		this.messages.save(new Message(robId, joshId, "Aloha", one));
 		this.messages.save(new Message(joshId, robId, "Welcome to Spring", one));
 
+		withTenant(two);
 		this.messages.save(new Message(joshId, filipId, "SAML is the bomb", two));
 		this.messages.save(new Message(filipId, joshId, "no doubt", two));
 
+		withTenant(three);
 		this.messages.save(new Message(joshId, riaId, "Hey, nice job adding multi-tenancy, man!", three));
+	}
+
+	private void withTenant(String tenant) {
+		OAuth2AuthenticatedPrincipal principal = new DefaultOAuth2AuthenticatedPrincipal
+				(Collections.singletonMap("tenant_id", tenant), Collections.emptyList());
+		OAuth2AccessToken token = new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER, "token", now(), now().plusSeconds(1));
+		BearerTokenAuthentication authentication =
+				new BearerTokenAuthentication(principal, token, Collections.emptyList());
+		SecurityContext context = SecurityContextHolder.getContext();
+		context.setAuthentication(authentication);
 	}
 }
