@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.nimbusds.jwt.JWTParser;
 
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationManagerResolver;
 import org.springframework.security.oauth2.jwt.JwtDecoders;
@@ -51,5 +52,15 @@ public class TenantAuthenticationManagerResolver implements AuthenticationManage
 				.map(JwtDecoders::fromIssuerLocation)
 				.map(JwtAuthenticationProvider::new)
 				.orElseThrow(() -> new IllegalArgumentException("unknown tenant"))::authenticate;
+	}
+
+	@KafkaListener(topics="tenants")
+	public void action(Map<String, Map<String, Object>> action) {
+		if (action.containsKey("created")) {
+			Map<String, Object> tenant = action.get("created");
+			String alias = (String) tenant.get("alias");
+			String issuerUri = (String) tenant.get("issuerUri");
+			this.tenants.put(alias, issuerUri);
+		}
 	}
 }

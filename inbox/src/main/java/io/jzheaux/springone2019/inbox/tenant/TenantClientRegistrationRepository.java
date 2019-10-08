@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import reactor.core.publisher.Mono;
 
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrations;
 import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
@@ -42,5 +43,16 @@ public class TenantClientRegistrationRepository implements ReactiveClientRegistr
 				.userNameAttributeName("email")
 				.scope("openid", "message:read")
 				.build());
+	}
+
+	@KafkaListener(topics="tenants")
+	public void action(Map<String, Map<String, Object>> action) {
+		if (action.containsKey("created")) {
+			Map<String, Object> tenant = action.get("created");
+			String alias = (String) tenant.get("alias");
+			String issuerUri = (String) tenant.get("issuerUri");
+			this.tenants.put(alias, issuerUri);
+			this.clients.remove(alias);
+		}
 	}
 }

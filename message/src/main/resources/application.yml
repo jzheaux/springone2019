@@ -10,3 +10,5 @@ spring:
   data:
     mongodb:
       port: 27017
+
+kafka.bootstrap-servers: localhost:9092

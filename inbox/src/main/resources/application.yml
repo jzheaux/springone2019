@@ -26,3 +26,5 @@ spring:
             client-id: message
             client-secret: bfbd9f62-02ce-4638-a370-80d45514bd0a
             scope: openid,message:read
+
+kafka.bootstrap-servers: localhost:9092
