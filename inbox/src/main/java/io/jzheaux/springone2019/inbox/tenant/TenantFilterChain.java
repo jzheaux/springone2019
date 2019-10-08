@@ -10,8 +10,6 @@ import reactor.util.context.Context;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.oauth2.client.oidc.web.server.logout.OidcClientInitiatedServerLogoutSuccessHandler;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
@@ -67,7 +65,9 @@ public class TenantFilterChain implements WebFilter, ApplicationContextAware {
 
 			// @formatter:off
 			http
-				.authorizeExchange(e -> e.anyExchange().authenticated())
+				.authorizeExchange(e -> e
+					.pathMatchers("/jwks").permitAll()
+					.anyExchange().authenticated())
 				.logout(l -> l.logoutSuccessHandler(handler))
 				.oauth2Login(withDefaults())
 				.exceptionHandling(e -> e.authenticationEntryPoint(entryPoint));

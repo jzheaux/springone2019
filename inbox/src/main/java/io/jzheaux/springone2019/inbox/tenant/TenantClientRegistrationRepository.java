@@ -38,6 +38,7 @@ public class TenantClientRegistrationRepository implements ReactiveClientRegistr
 				.registrationId(registrationId)
 				.clientId("message")
 				.clientSecret("bfbd9f62-02ce-4638-a370-80d45514bd0a")
+				.clientAuthenticationMethod(new ClientAuthenticationMethod("jwt"))
 				.userNameAttributeName("email")
 				.scope("openid", "message:read")
 				.build());
