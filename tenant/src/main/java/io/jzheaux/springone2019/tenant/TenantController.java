@@ -5,10 +5,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
-
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,7 +22,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.server.ServerResponse;
+
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 /**
  * @author Josh Cummings
@@ -40,7 +38,7 @@ public class TenantController {
 	private final String keycloakApiUri;
 
 	@Autowired
-	public TenantController(KafkaTemplate kafka, WebClient rest, @Value("${keycloakUri}") String keycloakUri) {
+	public TenantController(KafkaTemplate<String, Map<String, ?>> kafka, WebClient rest, @Value("${keycloakUri}") String keycloakUri) {
 		this.kafka = kafka;
 		this.rest = rest;
 		this.keycloakUri = keycloakUri;
@@ -97,7 +95,7 @@ public class TenantController {
 	}
 
 	@DeleteMapping("/{alias}")
-	public Mono<ResponseEntity> delete(@PathVariable String alias) {
+	public Mono<ResponseEntity<?>> delete(@PathVariable String alias) {
 		return this.rest.delete()
 				.uri(this.keycloakApiUri + "/" + alias)
 				.exchange()
@@ -157,6 +155,7 @@ public class TenantController {
 	private Client toClient(Map<String, Object> response, String alias) {
 		Client client = new Client();
 		client.setClientId((String) response.get("clientId"));
+		client.setClientSecret((String) response.get("secret"));
 		client.setIssuerUri(this.keycloakUri + "/realms/" + alias);
 		client.setTenantAlias(alias);
 		return client;

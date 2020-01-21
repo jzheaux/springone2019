@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Rob Winch
  */
 @RestController
-@RequestMapping(path="/users", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(path="/users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
 	private final UserRepository users;
 

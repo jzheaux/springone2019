@@ -25,7 +25,7 @@ public class WebClientUserService implements UserService {
 	public Mono<User> save(User user) {
 		return this.rest.post()
 				.uri(this.usersUrl)
-				.syncBody(user)
+				.bodyValue(user)
 				.retrieve()
 				.bodyToMono(User.class);
 	}

@@ -11,7 +11,7 @@ spring:
         registration:
           keycloak:
             client-id: master-realm
-            client-secret: bced593a-ec13-40e3-9bd3-f226eb62634b
+            client-secret: 53189bd9-8bf1-48a6-bc58-b7c566754846
             authorization-grant-type: client_credentials
   kafka:
     bootstrap-servers: localhost:9092

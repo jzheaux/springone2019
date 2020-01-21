@@ -5,6 +5,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.server.resource.authentication.AbstractOAuth2TokenAuthenticationToken;
 
 public class TenantResolver {
+
+	@SuppressWarnings("rawtypes")
 	public static String resolve() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication instanceof AbstractOAuth2TokenAuthenticationToken) {

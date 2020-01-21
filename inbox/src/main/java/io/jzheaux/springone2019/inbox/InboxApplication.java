@@ -81,6 +81,7 @@ public class InboxApplication {
 	}
 
 	@Order(-101)
+	@Bean
 	WebFilter tenant(ReactiveClientRegistrationRepository clients) {
 		return new TenantFilterChain(clients);
 	}

@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import reactor.core.publisher.Mono;
 
+import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrations;
@@ -17,8 +18,10 @@ import org.springframework.stereotype.Component;
 public class TenantClientRegistrationRepository implements ReactiveClientRegistrationRepository {
 	private final Map<String, String> tenants = new HashMap<>();
 	private final Map<String, Mono<ClientRegistration>> clients = new HashMap<>();
+	private final OAuth2ClientProperties oauth2Properties;
 
-	public TenantClientRegistrationRepository() {
+	public TenantClientRegistrationRepository(OAuth2ClientProperties oauth2Properties) {
+		this.oauth2Properties = oauth2Properties;
 		this.tenants.put("one", "http://idp:9999/auth/realms/one");
 		this.tenants.put("two", "http://idp:9999/auth/realms/two");
 	}
@@ -29,23 +32,40 @@ public class TenantClientRegistrationRepository implements ReactiveClientRegistr
 	}
 
 	private Mono<ClientRegistration> fromTenant(String registrationId) {
-		return Optional.ofNullable(this.tenants.get(registrationId))
-				.map(uri -> Mono.defer(() -> clientRegistration(uri, registrationId)).cache())
+		return Optional.ofNullable(oauth2Properties.getProvider().get(registrationId))
+				.map(provider -> {
+					OAuth2ClientProperties.Registration registration = 
+						oauth2Properties.getRegistration().get(registrationId);
+					return Mono.defer(() -> clientRegistration(provider, 
+						registration, registrationId)).cache();
+				})
 				.orElse(Mono.error(new IllegalArgumentException("unknown tenant")));
 	}
 
-	private Mono<ClientRegistration> clientRegistration(String uri, String registrationId) {
+	private Mono<ClientRegistration> clientRegistration(OAuth2ClientProperties.Provider provider, 
+		OAuth2ClientProperties.Registration registration, String registrationId) {
+		return Mono.just(ClientRegistrations.fromIssuerLocation(provider.getIssuerUri())
+			.registrationId(registrationId)
+			.clientId(registration.getClientId())
+			.clientSecret(registration.getClientSecret())
+			.clientAuthenticationMethod(ClientAuthenticationMethod.POST)
+			.userNameAttributeName(provider.getUserNameAttribute())
+			.scope(registration.getScope())
+			.build());
+	}
+
+	private Mono<ClientRegistration> clientRegistration(String uri, String registrationId, String clientSecret) {
 		return Mono.just(ClientRegistrations.fromIssuerLocation(uri)
 				.registrationId(registrationId)
 				.clientId("message")
-				.clientSecret("bfbd9f62-02ce-4638-a370-80d45514bd0a")
-				.clientAuthenticationMethod(new ClientAuthenticationMethod("jwt"))
+				.clientSecret(clientSecret)
+				.clientAuthenticationMethod(new ClientAuthenticationMethod("post"))
 				.userNameAttributeName("email")
 				.scope("openid", "message:read")
 				.build());
 	}
 
-	@KafkaListener(topics="tenants")
+	@KafkaListener(topics = "tenants")
 	public void action(Map<String, Map<String, Object>> action) {
 		if (action.containsKey("created")) {
 			Map<String, Object> tenant = action.get("created");
@@ -53,6 +73,17 @@ public class TenantClientRegistrationRepository implements ReactiveClientRegistr
 			String issuerUri = (String) tenant.get("issuerUri");
 			this.tenants.put(alias, issuerUri);
 			this.clients.remove(alias);
+		}
+	}
+
+	@KafkaListener(topics = "clients")
+	public void clients(Map<String, Map<String, Object>> payload) {
+		if (payload.containsKey("created")) {
+			Map<String, Object> client = payload.get("created");
+			String issuerUri = (String) client.get("issuerUri");
+			String registrationId = (String) client.get("tenantAlias");
+			String clientSecret = (String) client.get("clientSecret");
+			this.clients.put(registrationId, clientRegistration(issuerUri, registrationId, clientSecret));
 		}
 	}
 }

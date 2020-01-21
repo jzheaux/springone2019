@@ -41,7 +41,7 @@
 <body>
 
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <a class="navbar-brand" href="#" th:href="@{/inbox}"><strong>SMail</strong> - <em>Send your mail via smail mail</em></a>
+    <a class="navbar-brand" href="#" th:href="@{/messages/inbox}"><strong>SMail</strong> - <em>Send your mail via smail mail</em></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -49,9 +49,16 @@
     <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="#" th:href="@{/inbox}">Inbox <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="#" th:href="@{/messages/inbox}">Inbox <span class="sr-only">(current)</span></a>
             </li>
         </ul>
+        <form th:if="${currentUrl.getHost().startsWith(@applicationProperties.defaultHost)}" class="form-inline my-2 my-lg-0" th:action="@{/tenant}" th:method="post">
+            <div class="form-group mx-sm-3 mb-2 my-2 my-sm-0">
+              <label for="tenant" class="sr-only">Tenant</label>
+              <input type="text" class="form-control" name="tenant" id="tenant" th:placeholder="Tenant...">
+            </div>
+            <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">create</button>
+        </form>        
         <div th:if="${currentUser != null}" class="navbar-text px-2" th:text="${currentUser.firstName}">rob@example.com</div>
         <form th:if="${currentUser != null}" class="form-inline my-2 my-lg-0" th:action="@{/logout}" th:method="post">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Log out</button>
