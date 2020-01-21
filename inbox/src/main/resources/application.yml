@@ -20,11 +20,13 @@ spring:
         registration:
           one:
             client-id: message
-            client-secret: bfbd9f62-02ce-4638-a370-80d45514bd0a
+            client-secret: 41090dc6-ed60-445c-9a3e-bd1b58bb1c5b
             scope: openid,message:read
           two:
             client-id: message
-            client-secret: bfbd9f62-02ce-4638-a370-80d45514bd0a
+            client-secret: 495c5eb8-d816-4fa2-8ba4-d3d96971808e
             scope: openid,message:read
 
+app:
+  default-host: one
 kafka.bootstrap-servers: localhost:9092

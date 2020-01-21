@@ -21,12 +21,14 @@ class MongoUserInitiailizer implements SmartInitializingSingleton {
 		// sha256 w/ salt encoded "password"
 		String password = "73ac8218b92f7494366bf3a03c0c2ee2095d0c03a29cb34c95da327c7aa17173248af74d46ba2d4c";
 
-		UUID robId = UUID.fromString("6fb5a754-c666-4859-9452-f885796ee73e");
-		UUID joeId = UUID.fromString("94d835cc-c70f-47c1-8206-2ad7c8a37565");
-		UUID joshId = UUID.fromString("219168d2-1da4-4f8a-85d8-95b4377af3c1");
+		UUID robId = UUID.fromString("5bfce384-9e2e-4ace-a28d-3df2f662cb65");
+		UUID joeId = UUID.fromString("3e745d37-1f4f-4523-8408-a8c212aa7439");
+		UUID joshId = UUID.fromString("3d05248f-ea11-4b8c-9ad0-0a472e698e9e");
 
 		UUID filipId = UUID.fromString("a2b2c791-e05a-4934-be9b-fb488f87700a");
 		UUID riaId = UUID.fromString("3df7633b-0375-4609-a256-93bab5d19762");
+
+		this.users.deleteAll().block();
 
 		this.users.save(new User(robId, "rob@example.com", password, "Rob", "Winch")).block();
 		this.users.save(new User(joeId, "joe@example.com", password, "Joe", "Grandja")).block();

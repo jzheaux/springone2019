@@ -18,6 +18,7 @@ public class SignedJwtExchangeFilterFunction implements ExchangeFilterFunction {
 		this.jwtService = jwtService;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Mono<ClientResponse> filter(ClientRequest request, ExchangeFunction next) {
 		BodyInserters.FormInserter<String> body =

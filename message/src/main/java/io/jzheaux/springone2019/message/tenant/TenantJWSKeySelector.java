@@ -2,7 +2,6 @@ package io.jzheaux.springone2019.message.tenant;
 
 import java.net.URL;
 import java.security.Key;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

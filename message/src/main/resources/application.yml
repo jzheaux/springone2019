@@ -9,6 +9,9 @@ spring:
           issuer-uri: http://idp:9999/auth/realms/one
   data:
     mongodb:
+      authentication-database: admin
+      username: root
+      password: pwd
       port: 27017
 
 kafka.bootstrap-servers: localhost:9092

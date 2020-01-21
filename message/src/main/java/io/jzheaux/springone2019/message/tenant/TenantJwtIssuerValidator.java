@@ -1,6 +1,5 @@
 package io.jzheaux.springone2019.message.tenant;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;

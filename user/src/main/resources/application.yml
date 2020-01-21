@@ -1,2 +1,9 @@
 server:
   port: 8081
+
+spring:
+  data:
+    mongodb:
+      authentication-database: admin
+      username: root
+      password: pwd
