@@ -56,6 +56,7 @@ For the application to work, please take the following steps after cloning to yo
         - Save the client
         - Go to the `Service Account Roles` tab
         - Add `admin` to the effective roles
+        - For Keycloak Version 14 go to `Scope Tab` & add `admin` to the effective roles
         - Go to the `Credentials` tab
         - Copy the secret into the `tenant` `application.yml` file
 
